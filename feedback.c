@@ -7,14 +7,12 @@
 static Feedback feedbacks[MAX_FEEDBACKS];
 static int feedback_count = 3;
 
-// Initial mock data
 static Feedback initial_feedbacks[] = {
     {1, 101, 5, "Great service!"},
     {2, 102, 4, "Good experience overall."},
     {3, 103, 3, "Average service."}
 };
 
-// Initialize the feedbacks array with the initial mock data
 __attribute__((constructor)) static void init_feedbacks() {
     memcpy(feedbacks, initial_feedbacks, sizeof(initial_feedbacks));
 }

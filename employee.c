@@ -14,7 +14,6 @@
 
 #define BUFFER_SIZE 1024
 
-// Helper function prototypes
 static void send_message(int socket, const char *message);
 static void receive_message(int socket, char *buffer);
 
@@ -35,7 +34,6 @@ void trim_whitespace(char *str)
     while (end > str && isspace((unsigned char)*end))
         end--;
 
-    // Write new null terminator
     *(end + 1) = '\0';
 }
 
@@ -272,7 +270,6 @@ static void receive_message(int socket, char *buffer)
     if (valread > 0)
     {
         buffer[valread] = '\0';
-        // Remove newline character if present
         char *newline = strchr(buffer, '\n');
         if (newline)
             *newline = '\0';

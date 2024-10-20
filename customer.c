@@ -35,7 +35,6 @@ static void trim_whitespace(char *str)
     while (end > str && isspace((unsigned char)*end))
         end--;
 
-    // Write new null terminator
     *(end + 1) = '\0';
 }
 
@@ -129,7 +128,6 @@ void deposit_money(int user_id, int socket)
         snprintf(success_msg, BUFFER_SIZE, "Successfully deposited Rs%.2f. New balance: Rs%.2f\n", amount, account->balance);
         send_message(socket, success_msg);
 
-        // Record the transaction
         record_transaction(account->id, DEPOSIT, amount);
     }
     else
@@ -177,7 +175,6 @@ void withdraw_money(int user_id, int socket)
         snprintf(success_msg, BUFFER_SIZE, "Successfully withdrew Rs%.2f. New balance: Rs%.2f\n", amount, account->balance);
         send_message(socket, success_msg);
 
-        // Record the transaction
         record_transaction(account->id, WITHDRAW, amount);
     }
     else
@@ -421,30 +418,3 @@ static void receive_message(int socket, char *buffer)
             *newline = '\0';
     }
 }
-
-// static void send_message(int socket, const char* message) {
-//     size_t len = strlen(message);
-//     ssize_t sent = send(socket, message, len, 0);
-//     if (sent == -1) {
-//         perror("Error sending message");
-//     } else {
-//         printf("Sent message: %s", message); // Debug
-//     }
-// }
-
-// static void receive_message(int socket, char* buffer) {
-//     memset(buffer, 0, BUFFER_SIZE);
-//     ssize_t valread = recv(socket, buffer, BUFFER_SIZE - 1, 0);
-//     if (valread > 0) {
-//         buffer[valread] = '\0';
-//         char* newline = strchr(buffer, '\n');
-//         if (newline) *newline = '\0';
-//         char* carriage_return = strchr(buffer, '\r');
-//         if (carriage_return) *carriage_return = '\0';
-//         printf("Received message: %s\n", buffer); // Debug
-//     } else if (valread == 0) {
-//         fprintf(stderr, "Client disconnected\n");
-//     } else {
-//         perror("Error receiving message");
-//     }
-// }

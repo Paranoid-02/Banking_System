@@ -1,4 +1,3 @@
-// admin.c
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -48,7 +47,6 @@ static void trim_whitespace(char* str) {
     end = str + strlen(str) - 1;
     while (end > str && isspace((unsigned char)*end)) end--;
 
-    // Write new null terminator
     *(end + 1) = '\0';
 }
 void create_new_employee(int socket_desc) {
@@ -243,7 +241,6 @@ static void receive_message(int socket, char *buffer)
     if (valread > 0)
     {
         buffer[valread] = '\0';
-        // Remove newline character if present
         char *newline = strchr(buffer, '\n');
         if (newline)
             *newline = '\0';

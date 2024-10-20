@@ -22,50 +22,46 @@
 #define MAX_CLIENTS 10
 #define BUFFER_SIZE 1024
 
-// Mutex for thread-safe operations
 pthread_mutex_t file_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t transaction_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t account_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-// Thread function prototypes
 void *handle_client(void *socket_desc);
 void send_message(int socket, const char *message);
 void receive_message(int socket, char *buffer);
 User *handle_login(int socket);
-// void handle_logout(int socket, User *user);
 
-// Structure to pass data to threads
 typedef struct {
     int socket;
     struct sockaddr_in address;
 } client_data;
 
-// Function to safely lock file operations
+//safely lock file operations
 void lock_file_operations() {
     pthread_mutex_lock(&file_mutex);
 }
 
-// Function to safely unlock file operations
+//safely unlock file operations
 void unlock_file_operations() {
     pthread_mutex_unlock(&file_mutex);
 }
 
-// Function to safely lock transaction operations
+//safely lock transaction operations
 void lock_transaction_operations() {
     pthread_mutex_lock(&transaction_mutex);
 }
 
-// Function to safely unlock transaction operations
+//safely unlock transaction operations
 void unlock_transaction_operations() {
     pthread_mutex_unlock(&transaction_mutex);
 }
 
-// Function to safely lock account operations
+//safely lock account operations
 void lock_account_operations() {
     pthread_mutex_lock(&account_mutex);
 }
 
-// Function to safely unlock account operations
+//safely unlock account operations
 void unlock_account_operations() {
     pthread_mutex_unlock(&account_mutex);
 }
@@ -86,20 +82,17 @@ int main() {
     int addrlen = sizeof(address);
     pthread_t thread_id;
 
-    // Initialize systems
     if (!initialize_user_system() || !initialize_account_system() || 
         !initialize_transaction_system() || !initialize_loan_system()) {
         fprintf(stderr, "Failed to initialize systems\n");
         exit(EXIT_FAILURE);
     }
 
-    // Create socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
 
-    // Set socket options
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
@@ -109,13 +102,11 @@ int main() {
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
 
-    // Bind the socket
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
 
-    // Listen for connections
     if (listen(server_fd, MAX_CLIENTS) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);
@@ -134,7 +125,7 @@ int main() {
             continue;
         }
 
-        // Create a new thread for each client
+        // Creating a new thread for each client
         if (pthread_create(&thread_id, NULL, handle_client, (void*)client) < 0) {
             perror("could not create thread");
             close(client->socket);
@@ -145,7 +136,6 @@ int main() {
         pthread_detach(thread_id);
     }
 
-    // Cleanup
     pthread_mutex_destroy(&file_mutex);
     pthread_mutex_destroy(&transaction_mutex);
     pthread_mutex_destroy(&account_mutex);
@@ -266,30 +256,3 @@ User *handle_login(int socket) {
 
     return user;
 }
-
-// void handle_logout(int socket, User *user) {
-//     if (user == NULL) {
-//         send_message(socket, "No user is currently logged in.\n");
-//         return;
-//     }
-    
-//     switch (user->role) {
-//         case CUSTOMER:
-//             logout_customer(user);
-//             break;
-//         case EMPLOYEE:
-//             logout_employee(user);
-//             break;
-//         case MANAGER:
-//             logout_manager(user);
-//             break;
-//         case ADMIN:
-//             logout_admin(user);
-//             break;
-//         default:
-//             send_message(socket, "Invalid user role.\n");
-//             break;
-//     }
-
-//     send_message(socket, "You have successfully logged out.\n");
-// }
